@@ -14,10 +14,11 @@ class NfqWeatherExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('providers.yaml');
 
         $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.openweathermap');
+        $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.yahoo');
+//        $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.delegating');
     }
 }

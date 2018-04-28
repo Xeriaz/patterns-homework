@@ -1,5 +1,4 @@
 nfq_weather:
-# TODO: Uncomment the following once Configuration.php is implemented
     provider: delegating
     providers:
         openweathermap:
