@@ -8,11 +8,10 @@ class DelegatingWeatherProvider implements WeatherProviderInterface
 
     /**
      * DelegatingWeatherProvider constructor.
-     * @param WeatherProviderInterface $providers
+     * @param $providers
      */
-    public function __construct( $providers)
+    public function __construct($providers)
     {
-        dump($providers);
         $this->providers = $providers;
     }
 

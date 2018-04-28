@@ -2,6 +2,7 @@
 
 namespace Nfq\WeatherBundle\DependencyInjection;
 
+use Nfq\WeatherBundle\WeatherProviderException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -14,11 +15,18 @@ class NfqWeatherExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('providers.yaml');
 
-        $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.openweathermap');
-        $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.yahoo');
-//        $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.delegating');
+        if ($config['provider'] === 'yahoo') {
+            $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.yahoo');
+        } else if ($config['provider'] === 'openweathermap') {
+            $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.openweathermap');
+        } else if ($config['provider'] === 'delegating') {
+//            $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.delegating');
+        } else {
+            throw new WeatherProviderException("Provider isn't found");
+        }
     }
 }
