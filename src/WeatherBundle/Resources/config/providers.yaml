@@ -4,7 +4,8 @@ services:
 
     nfq_weather.provider.openweathermap:
         class: Nfq\WeatherBundle\OpenWeatherMapWeatherProvider
-        arguments: ['']
+#        FIXME hardcoded apikey
+        arguments: ['c5fb386073ea22eb1f32d78dcdb0197d']
 
     nfq_weather.provider.yahoo:
         class: Nfq\WeatherBundle\YahooWeatherProvider
