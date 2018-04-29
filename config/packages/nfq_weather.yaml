@@ -2,7 +2,7 @@ nfq_weather:
     provider: delegating
     providers:
         openweathermap:
-            api_key: 'secretapikey'
+            api_key: 'c5fb386073ea22eb1f32d78dcdb0197d'
         delegating:
             providers:
                 - yahoo

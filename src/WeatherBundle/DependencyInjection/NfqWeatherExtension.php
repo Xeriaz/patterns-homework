@@ -19,6 +19,11 @@ class NfqWeatherExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('providers.yaml');
 
+        if (isset($config['providers']['openweathermap']['api_key'])) {
+            $container->getDefinition('nfq_weather.provider.openweathermap')
+                ->replaceArgument(0, $config['providers']['openweathermap']['api_key']);
+        }
+
         if ($config['provider'] === 'yahoo') {
             $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.yahoo');
         } else if ($config['provider'] === 'openweathermap') {
@@ -26,7 +31,7 @@ class NfqWeatherExtension extends Extension
         } else if ($config['provider'] === 'delegating') {
 //            $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.delegating');
         } else {
-            throw new WeatherProviderException("Provider isn't found");
+            throw new WeatherProviderException(sprintf("Provider %s not found", $config['provider'] ));
         }
     }
 }
