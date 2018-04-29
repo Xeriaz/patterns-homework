@@ -4,13 +4,16 @@ namespace Nfq\WeatherBundle;
 
 class DelegatingWeatherProvider implements WeatherProviderInterface
 {
-    private $providers;
+    /**
+     * @var array
+     */
+    private $providers = [];
 
     /**
      * DelegatingWeatherProvider constructor.
-     * @param $providers
+     * @param array $providers
      */
-    public function __construct($providers)
+    public function __construct(array $providers)
     {
         $this->providers = $providers;
     }
@@ -21,11 +24,10 @@ class DelegatingWeatherProvider implements WeatherProviderInterface
     public function fetch(Location $location): Weather
     {
         foreach ($this->providers as $provider) {
-            if ($provider) {
-                return $provider;
-            }
+                try {
+                    return $provider->fetch($location);
+                } catch (WeatherProviderException $e) { }
         }
         throw new WeatherProviderException("Weather providers can't receive information");
     }
-
 }

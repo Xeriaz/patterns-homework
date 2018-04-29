@@ -4,6 +4,9 @@ namespace Nfq\WeatherBundle;
 
 class YahooWeatherProvider implements WeatherProviderInterface
 {
+    /**
+     * @var string
+     */
     private $BASE_URL = "http://query.yahooapis.com/v1/public/yql";
 
     /**
@@ -35,6 +38,10 @@ class YahooWeatherProvider implements WeatherProviderInterface
         return new Weather($temp);
     }
 
+    /**
+     * @param Location $location
+     * @return string
+     */
     private function getQuery(Location $location): string
     {
         $lat = $location->getLat();

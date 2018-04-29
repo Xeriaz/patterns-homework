@@ -2,15 +2,20 @@
 
 namespace Nfq\WeatherBundle\DependencyInjection;
 
-use Nfq\WeatherBundle\WeatherProviderException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Nfq\WeatherBundle\WeatherProviderInterface;
+use Symfony\Component\DependencyInjection\Reference;
 
 class NfqWeatherExtension extends Extension
 {
+    /**
+     * @param array $configs
+     * @param ContainerBuilder $container
+     * @throws \Exception
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
@@ -24,14 +29,18 @@ class NfqWeatherExtension extends Extension
                 ->replaceArgument(0, $config['providers']['openweathermap']['api_key']);
         }
 
-        if ($config['provider'] === 'yahoo') {
-            $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.yahoo');
-        } else if ($config['provider'] === 'openweathermap') {
-            $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.openweathermap');
-        } else if ($config['provider'] === 'delegating') {
-//            $container->setAlias(WeatherProviderInterface::class, 'nfq_weather.provider.delegating');
-        } else {
-            throw new WeatherProviderException(sprintf("Provider %s not found", $config['provider'] ));
+        $providerIdPrefix = 'nfq_weather.provider.';
+        $providerId =  $providerIdPrefix . $config['provider'];
+
+        foreach ($config['providers']['delegating']['providers'] as $provider){
+            $providerReferences[] = new Reference($providerIdPrefix.$provider);
         }
+
+        if (isset($config['providers']['delegating']['providers'])) {
+            $container->getDefinition('nfq_weather.provider.delegating')
+                ->replaceArgument(0, $providerReferences);
+        }
+
+        $container->setAlias(WeatherProviderInterface::class, $providerId);
     }
 }
