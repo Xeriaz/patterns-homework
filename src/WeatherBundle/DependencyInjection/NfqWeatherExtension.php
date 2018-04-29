@@ -24,12 +24,13 @@ class NfqWeatherExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('providers.yaml');
 
+        $providerIdPrefix = 'nfq_weather.provider.';
+
         if (isset($config['providers']['openweathermap']['api_key'])) {
-            $container->getDefinition('nfq_weather.provider.openweathermap')
+            $container->getDefinition($providerIdPrefix.'openweathermap')
                 ->replaceArgument(0, $config['providers']['openweathermap']['api_key']);
         }
 
-        $providerIdPrefix = 'nfq_weather.provider.';
         $providerId =  $providerIdPrefix . $config['provider'];
 
         foreach ($config['providers']['delegating']['providers'] as $provider){
@@ -37,7 +38,7 @@ class NfqWeatherExtension extends Extension
         }
 
         if (isset($config['providers']['delegating']['providers'])) {
-            $container->getDefinition('nfq_weather.provider.delegating')
+            $container->getDefinition($providerIdPrefix.'delegating')
                 ->replaceArgument(0, $providerReferences);
         }
 
